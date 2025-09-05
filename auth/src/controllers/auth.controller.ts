@@ -1,14 +1,11 @@
 import type { Request, Response } from "express";
 
 export const signup = (req: Request, res: Response) => {
-  const { email, password, name } = req.body;
-
-  // TODO: Hash password, save to database
-  console.log("Creating user:", { email, name, password });
+  const { email, password } = req.body;
 
   res.status(201).json({
     message: "User created successfully",
-    user: { email, name, password },
+    user: { email, password },
   });
 };
 
