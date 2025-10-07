@@ -6,8 +6,16 @@ import { signoutRouter } from "./routes/signout.js";
 import { signupRouter } from "./routes/signup.js";
 import connectDB from "./config/db.js";
 import { errorHandler, NotFoundError } from "./middleware/errorHandler.js";
+import cookieSession from "cookie-session";
 const app = express();
+app.set("trust proxy", true);
 app.use(express.json());
+app.use(
+  cookieSession({
+    signed: false,
+    secure: true,
+  })
+);
 
 // Routes
 app.use("/api/users", currentUserRouter);
@@ -24,6 +32,9 @@ app.all("*", async () => {
 app.use(errorHandler);
 
 const start = async () => {
+  if (!process.env.JWT_KEY) {
+    throw new Error("JWT_KEY must be defined");
+  }
   try {
     await connectDB();
     app.listen(3000, () => {

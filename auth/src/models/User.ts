@@ -17,10 +17,22 @@ interface IUser extends Document {
   password: string;
 }
 
-const userSchema = new Schema<IUser>({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-});
+const userSchema = new Schema<IUser>(
+  {
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+  },
+  {
+    toJSON: {
+      transform(doc, ret: any) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.password;
+        delete ret.__v;
+      },
+    },
+  }
+);
 
 // ✅ statics ile type-safe constructor
 userSchema.statics.build = (attrs: UserAttrs) => {
