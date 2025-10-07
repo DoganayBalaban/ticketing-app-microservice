@@ -66,6 +66,20 @@ export class BadRequestError extends Error {
   }
 }
 
+export class NotAuthorizedError extends Error {
+  statusCode = 401;
+
+  constructor() {
+    super("Not authorized");
+
+    Object.setPrototypeOf(this, NotAuthorizedError.prototype);
+  }
+
+  serializeErrors() {
+    return [{ message: "Not authorized" }];
+  }
+}
+
 export const errorHandler = (
   err: CustomError,
   req: Request,
@@ -94,6 +108,12 @@ export const errorHandler = (
   }
 
   if (err instanceof BadRequestError) {
+    return res.status(err.statusCode).json({
+      errors: err.serializeErrors(),
+    });
+  }
+
+  if (err instanceof NotAuthorizedError) {
     return res.status(err.statusCode).json({
       errors: err.serializeErrors(),
     });
