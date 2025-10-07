@@ -72,9 +72,12 @@ export const signin = async (req: Request, res: Response) => {
 };
 
 export const signout = (req: Request, res: Response) => {
-  res.send("Signout endpoint!");
+  req.session = null;
+  res.send({
+    message: "Signed out successfully",
+  });
 };
 
-export const currentUser = (req: Request, res: Response) => {
-  res.send("Current user endpoint!");
+export const getMe = (req: Request, res: Response) => {
+  res.send({ user: req.currentUser || null });
 };
